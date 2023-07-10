@@ -1,46 +1,30 @@
 import axios from "axios";
 import Cookies from "universal-cookie";
-import CryptoJS from "crypto-js";
 const cookies = new Cookies();
 // ------------------ ENCRYPTION ------------------ //
 
 // encrypt data
 // encrypt data
 
-export const cryptoEncrypt = (data) => {
-  console.log(process.env.REACT_APP_ACCESS_TOKEN_SECRET);
-
-  return CryptoJS.AES.encrypt(
-    JSON.stringify(data),
-    process.env.REACT_APP_ACCESS_TOKEN_SECRET,
-  ).toString();
-};
-
-// decrypt data
-export const cryptoDecrypt = (ciphertext) => {
-  var bytes = CryptoJS.AES.decrypt(
-    ciphertext,
-    process.env.REACT_APP_ACCESS_TOKEN_SECRET,
-  );
-  return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-};
+const baseUrl = "http://localhost:6969/";
 
 // ------------------ API CALLING ------------------ //
 export const onPostData = async (url, data) => {
   // get token from cookie named token and set in header
 
   if (!cookies.get("data")) {
-    return await axios.post("/" + url, data, {
+    console.log("no token");
+    return await axios.post(baseUrl + url, data, {
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Methods": "POST",
       },
     });
   } else {
-    const token = cryptoDecrypt(cookies.get("data")).token;
+    const token = cookies.get("data").token;
 
     // fire post request
-    return await axios.post("/" + url, data, {
+    return await axios.post(baseUrl + url, data, {
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Methods": "POST",
@@ -54,16 +38,16 @@ export const onDeleteData = async (url) => {
   // get token from cookie named token and set in header
 
   if (!cookies.get("data")) {
-    return await axios.delete("/" + url, {
+    return await axios.delete(baseUrl + url, {
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Methods": "DELETE",
       },
     });
   } else {
-    const token = cryptoDecrypt(cookies.get("data")).token;
+    const token = cookies.get("data").token;
     // fire post request
-    return await axios.delete("/" + url, {
+    return await axios.delete(baseUrl + url, {
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Methods": "DELETE",
@@ -77,17 +61,17 @@ export const onPostFormData = async (url, data) => {
   // get token from cookie named data and set in header
 
   if (!cookies.get("data")) {
-    return await axios.post("/" + url, data, {
+    return await axios.post(baseUrl + url, data, {
       headers: {
         "Content-Type": "multipart/form-data",
         "Access-Control-Allow-Methods": "POST",
       },
     });
   } else {
-    const token = cryptoDecrypt(cookies.get("data")).token;
+    const token = cookies.get("data").token;
 
     // fire post request
-    return await axios.post("/" + url, data, {
+    return await axios.post(baseUrl + url, data, {
       headers: {
         "Content-Type": "multipart/form-data",
         "Access-Control-Allow-Methods": "POST",
@@ -100,17 +84,17 @@ export const onPostFormData = async (url, data) => {
 export const onGetData = async (url) => {
   // get token from cookie named token and set in header
   if (!cookies.get("data")) {
-    return await axios.get("/" + url, {
+    return await axios.get(baseUrl + url, {
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
       },
     });
   } else {
-    const token = cryptoDecrypt(cookies.get("data")).token;
+    const token = cookies.get("data").token;
 
     // fire get request
-    return await axios.get("/" + url, {
+    return await axios.get(baseUrl + url, {
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
@@ -123,7 +107,7 @@ export const onGetData = async (url) => {
 
 // set encrypted data in cookie
 export const setData = (data) => {
-  cookies.set("data", cryptoEncrypt(data), { path: "/" });
+  cookies.set("data", data, { path: "/" });
 };
 
 // remove data from cookie
@@ -135,7 +119,7 @@ export const removeData = () => {
 // check if user is logged in
 export const isUser = () => {
   if (cookies.get("data")) {
-    const data = cryptoDecrypt(cookies.get("data"));
+    const data = cookies.get("data");
     if (data) {
       return data;
     } else {

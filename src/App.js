@@ -6,7 +6,42 @@ import "./App.css";
 export default function App() {
   return (
     <Router>
-      <Route component={loadable(() => import("./views/pages/404"))} />
+      <Switch>
+        <Route
+          exact
+          path="/user/login"
+          component={loadable(() => import("./views/pages/User/login/login"))}
+        />
+        <Route
+          exact
+          path="/user/profile"
+          component={loadable(() =>
+            import("./views/pages/User/profile/profile"),
+          )}
+        />
+        <Route
+          exact
+          path="/user/book"
+          component={loadable(() =>
+            import("./views/pages/User/book/book"),
+          )}
+        />
+        <Route
+          exact
+          path="/garage/dashboard"
+          component={loadable(() =>
+            import("./views/pages/Garages/dashboard/dashboard"),
+          )}
+        />
+        <Route
+          exact
+          path="/garage/:garage"
+          component={loadable(() =>
+            import("./views/pages/Garages/garage/garage"),
+          )}
+        />
+        <Route component={loadable(() => import("./views/pages/404"))} />
+      </Switch>
     </Router>
   );
 }
