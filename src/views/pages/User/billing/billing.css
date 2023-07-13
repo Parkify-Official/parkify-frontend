@@ -1,23 +1,20 @@
 /* Import Google font - Poppins */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
 
+:root {
+    --clr-main-bg: #181818;
+    --clr-main-theme: #8758FF;
+    --clr-text: rgb(170, 169, 169);
+    --clr-hover: #e09900;
+    --clr-light: rgb(192, 189, 189);
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: "Poppins", sans-serif;
 
-}
-
-a {
-    text-decoration: none;
-    color: #fff;
-    cursor: pointer;
-}
-
-a:hover {
-    color: #fff;
-    text-decoration: none;
 }
 
 body {
@@ -41,20 +38,7 @@ body {
     color: #fff;
     padding: 20px 30px;
 }
-.button {
-    background: #7d2ae8;
-    margin-top: 30px;
-    width: 25%;
-    padding: 10px 0;
-    border-radius: 10px;
-    color: #fff;
-    transition: all 0.4s ease-out;
-    cursor: pointer;
-    border: none;
-}
-button:hover {
-    opacity: 0.8;
-}
+
 .result-part{
     width: 60%;
     margin-left: auto;
@@ -73,19 +57,12 @@ button:hover {
     padding-left: 15px;
 }
 .result-row .result-cells h4{
-    font-size: medium;
     color: #fff;
 }
 .result-row .result-cells p{
-    font-size: medium;
     color: #ffffff86;
 
 }
-
-Link {
-    width: 150px;
-}
-
 .result-row #book-btn-cell{
    display: flex;
    align-items: center;

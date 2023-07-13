@@ -7,10 +7,20 @@ export default function App() {
   return (
     <Router>
       <Switch>
+      <Route
+          exact
+          path="/"
+          component={loadable(() => import("./views/pages/home/home"))}
+        />
         <Route
           exact
           path="/user/login"
           component={loadable(() => import("./views/pages/User/login/login"))}
+        />
+        <Route
+          exact
+          path="/user/billing"
+          component={loadable(() => import("./views/pages/User/billing/billing"))}
         />
         <Route
           exact

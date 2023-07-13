@@ -1,9 +1,4 @@
 @font-face {
-  font-family: anton;
-  src: url("./views/assets/fonts/Anton-Regular.ttf");
-}
-
-@font-face {
-  font-family: advent-bold;
-  src: url("./views/assets/fonts/AdventPro-Bold.ttf");
+  font-family: Poppins;
+  src: url("./views/assets/fonts/Poppins-SemiBold.ttf");
 }

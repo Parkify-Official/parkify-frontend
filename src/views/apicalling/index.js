@@ -110,6 +110,11 @@ export const setData = (data) => {
   cookies.set("data", data, { path: "/" });
 };
 
+// get cookie data
+export const getCookies = () => {
+  return cookies.get("data");
+};
+
 // remove data from cookie
 export const removeData = () => {
   cookies.remove("data", { path: "/" });

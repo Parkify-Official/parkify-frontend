@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { Link, Redirect } from "react-router-dom";
 import "./login.css";
-import { onPostData } from "../../../apicalling";
+import { onPostData, removeData, setData } from "../../../apicalling";
+const { useNotifications } = require("../../../../context/NotificationContext");
 
 export default function UserLogin() {
   const [page, setPage] = useState("login");
@@ -14,6 +16,10 @@ export default function UserLogin() {
   const [licenseId, setLicenseId] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { createNotification } = useNotifications();
+  const [userRedirect, setUserRedirect] = useState(false);
+  const [garageRedirect, setGarageRedirect] = useState(false);
+
 
   const changePage = (e) => {
     e.preventDefault();
@@ -59,31 +65,82 @@ export default function UserLogin() {
     setPassword(e.target.value);
   };
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+  const handleLogin = async (e) => {
+    try {
+      e.preventDefault();
 
-    const user = {
-      email: email,
-      password: password,
-    };
+      const user = {
+        email: email,
+        password: password,
+      };
 
-    console.log(user);
+      const data = await onPostData("users/login", user);
+
+      if (data.error) {
+        createNotification("error", data.error);
+      } else {
+        console.log(data.data.user);
+        setData(data.data.user);
+        // redirect to booking page
+        createNotification("success", "Logged In");
+        if (data.data.user.role === "user")
+          setUserRedirect(true);
+        else
+          setGarageRedirect(true);
+
+      }
+    } catch (err) {
+      if (err.response && err.response.status === 401) {
+        removeData();
+      }
+      createNotification("error", err.response.data.message);
+    }
   };
 
-  const handleRegister = (e) => {
-    e.preventDefault();
+  if (userRedirect) {
+    return <Redirect to="/user/book" />;
+  }
 
-    const user = {
-      name: name,
-      role: role,
-      phone: phone,
-      address: address,
-      licenseId: licenseId,
-      email: email,
-      password: password,
-    };
+  if (garageRedirect) {
+    return <Redirect to="/garage/dashboard" />;
+  }
 
-    console.log(user);
+  const handleRegister = async (e) => {
+    try {
+      e.preventDefault();
+
+      const user = {
+        name: name,
+        role: role,
+        phone: phone,
+        address: address,
+        licenseId: licenseId,
+        email: email,
+        password: password,
+      };
+
+      const data = await onPostData("users/register", user);
+
+      if (data.error) {
+        createNotification("error", data.error);
+      } else {
+        console.log(data.data.user);
+        setData(data.data.user);
+        // redirect to booking page
+        createNotification("success", "Logged In");
+        if (data.data.user.role === "user")
+          setUserRedirect(true);
+        else
+          setGarageRedirect(true);
+
+      }
+    } catch (err) {
+      if (err.response && err.response.status === 401) {
+        removeData();
+      }
+      createNotification("error", err.response.data.message);
+    }
+
   };
 
   return (
@@ -97,18 +154,19 @@ export default function UserLogin() {
               {/* name */}
 
               <div className="input_box">
+                <i className="uil uil-user"></i>
                 <input
                   type="text"
                   placeholder="Enter your name"
                   required
                   onChange={handleNameChange}
                 />
-                <i className="uil uil-user"></i>
               </div>
 
               {/* role - (drop down with options "user" and "no_garage") */}
 
               <div className="input_box">
+                {/* <i className="uil uil-user"></i> */}
                 <select
                   name="role"
                   id="role"
@@ -121,43 +179,43 @@ export default function UserLogin() {
                   <option value="user">User</option>
                   <option value="no_garage">No Garage</option>
                 </select>
-                <i className="uil uil-user"></i>
               </div>
 
               {/* phone */}
 
               <div className="input_box">
+                <i className="uil uil-phone"></i>
                 <input
                   type="tel"
                   placeholder="Enter your phone number"
                   required
                   onChange={handlePhoneChange}
                 />
-                <i className="uil uil-phone"></i>
               </div>
 
               {/* address */}
 
               <div className="input_box">
+                <i className="uil uil-map-marker"></i>
                 <input
                   type="text"
                   placeholder="Enter your address"
                   required
                   onChange={handleAddressChange}
                 />
-                <i className="uil uil-map-marker"></i>
               </div>
 
               {/* licenseId */}
 
               <div className="input_box">
+                <i className="uil uil-envelope-alt email"></i>
                 <input
                   type="text"
                   placeholder="Enter your license ID"
                   required
                   onChange={handleLicenseIdChange}
                 />
-                <i className="uil uil-id-card"></i>
+                {/* <i className="uil uil-id-card"></i> */}
               </div>
 
               {/* email */}
@@ -185,12 +243,12 @@ export default function UserLogin() {
                 <i className="uil uil-eye-slash pw_hide"></i>
               </div>
 
-              <button className="button">Login Now</button>
+              <button className="button">Signup Now</button>
 
               <div className="login_signup">
-                Don't have an account?{" "}
+                Already have an account?{" "}
                 <a onClick={changePage} id="signup">
-                  Signup
+                  Login
                 </a>
               </div>
             </form>
@@ -227,12 +285,12 @@ export default function UserLogin() {
                 <i className="uil uil-eye-slash pw_hide"></i>
               </div>
 
-              <button className="button">Signup Now</button>
+              <button className="button">Login</button>
 
               <div className="login_signup">
-                Already have an account?{" "}
-                <a onClick={changePage} id="login">
-                  Login
+                Don't have an account?{" "}
+                <a onClick={changePage} id="signup">
+                  Signup
                 </a>
               </div>
             </form>

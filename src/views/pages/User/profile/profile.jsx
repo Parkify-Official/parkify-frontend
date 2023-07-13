@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { getCookies } from "../../../apicalling";
 import "./profile.css";
+import image from "../../../assets/images/ppic.jpg"
+const { useNotifications } = require("../../../../context/NotificationContext");
 
 export default function UserLogin() {
   // the state will get data from cookies
@@ -8,6 +11,23 @@ export default function UserLogin() {
   const [lastName, setLastName] = useState("Chakraborty");
   const [userName, setUserName] = useState("user_name");
   const [email, setEmail] = useState("example@gmail.com");
+  const { createNotification } = useNotifications();
+
+  useEffect(() => {
+    const cookies = getCookies();
+
+    console.log(cookies);
+    if (cookies) {
+      setFirstName(cookies.name.split(" ")[0]);
+      setLastName(cookies.name.split(" ")[1] ? cookies.name.split(" ")[1] : "-");
+      setUserName(cookies.phone);
+      setEmail(cookies.email);
+    }
+  }, []);
+
+  const underConstruction = () => {
+    createNotification("info", "This feature is under construction");
+  };
 
   return (
     <section>
@@ -16,7 +36,7 @@ export default function UserLogin() {
           <div className="container">
             <div className="card">
               <div className="profile-pic">
-                <img src="ppic.jpg" alt="profile" />
+                <img src={image} alt="profile" />
               </div>
               <div className="profile-info">
                 <h2 className="name">{firstName + " " + lastName}</h2>
@@ -42,7 +62,7 @@ export default function UserLogin() {
         <div className="left-div">
           <div className="div-top">
             <h3>My account</h3>
-            <a href="#" className="edit-btn">
+            <a href="#" className="edit-btn" onClick={underConstruction}>
               Edit
             </a>
           </div>
@@ -58,7 +78,7 @@ export default function UserLogin() {
           </div>
           <div className="div-row">
             <div className="div-cell">
-              <p className="cell-head">Username</p>
+              <p className="cell-head">Phone</p>
               <p className="cell-content">{userName}</p>
             </div>
             <div className="div-cell">
